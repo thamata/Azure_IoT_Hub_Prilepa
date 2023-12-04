@@ -24,7 +24,7 @@
  * file.
  */
 
- #include <ArduinoJson.h>
+#include <ArduinoJson.h>
 
 // C99 libraries
 #include <cstdlib>
@@ -324,13 +324,13 @@ static void sendTelemetry()
     return;
   }
 
-  StaticJsonDocument<256> document;
+  StaticJsonDocument<256> doc;
 
-  document["temperature"] = random(15.0, 32.0);
-  document["humidity"] = random(70, 90);
+  doc["temperature"] = random(15.0, 32.0);
+  doc["humidity"] = random(70, 90);
 
   char buffer[256];
-  serializeJson(document, buffer);
+  serializeJson(doc, buffer);
 
   if (esp_mqtt_client_publish(
           mqtt_client,

@@ -13,6 +13,8 @@
 
 
 #include <WiFiS3.h>
+#include <ArduinoJson.h>
+
 
 int status = WL_IDLE_STATUS;
 ///////please enter your sensitive data in the Secret tab/arduino_secrets.h
@@ -22,33 +24,34 @@ char pass[] = "ubjBpguLwn";    // your network password (use for WPA, or use as 
 const char * udpAddress = "192.168.100.185";
 unsigned int localPort = 3333;      // local port to listen on
 
-char packetBuffer[256]; //buffer to hold incoming packet
-char ReplyBuffer[] = "acknowledged\n";       // a string to send back
-
 WiFiUDP Udp;
+
+static void SendPacket(){
+  // Create JSON
+  StaticJsonDocument<256> doc;
+
+  doc["temperature"] = random(15.0, 32.0);
+  doc["humidity"] = random(70, 90);
+
+  Serial.println("Message sent: ");
+  serializeJsonPretty(doc, Serial);
+
+  char buffer[256];
+  serializeJson(doc, buffer);
+
+
+  Udp.beginPacket(udpAddress,localPort);
+  Udp.write(buffer);
+  Udp.endPacket();
+}
 
 void setup() {
   //Initialize serial and wait for port to open:
   Serial.begin(115200);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
-
-  // check for the WiFi module:
-  if (WiFi.status() == WL_NO_MODULE) {
-    Serial.println("Communication with WiFi module failed!");
-    // don't continue
-    while (true);
-  }
-
-  String fv = WiFi.firmwareVersion();
-  if (fv < WIFI_FIRMWARE_LATEST_VERSION) {
-    Serial.println("Please upgrade the firmware");
-  }
 
   // attempt to connect to WiFi network:
   while (status != WL_CONNECTED) {
-    Serial.print("Attempting to connect to SSID: ");
+    Serial.println("Attempting to connect to SSID: ");
     Serial.println(ssid);
     // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
     status = WiFi.begin(ssid, pass);
@@ -65,11 +68,8 @@ void setup() {
 }
 
 void loop() {
-
-  Udp.beginPacket(udpAddress,localPort);
-  Udp.println("Message");
-  Udp.endPacket();
-  Serial.println("Message sent");
+  SendPacket();
+  Serial.println();
 
   delay(10000);
 }
