@@ -336,7 +336,7 @@ static void sendTelemetry()
           mqtt_client,
           telemetry_topic,
           buffer,
-          0,
+          0, //"data length, if set to 0, length is calculated from payload string"
           MQTT_QOS1,
           DO_NOT_RETAIN_MSG)
       == 0){
