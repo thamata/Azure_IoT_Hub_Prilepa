@@ -336,7 +336,7 @@ static void sendTelemetry()
           mqtt_client,
           telemetry_topic,
           buffer,
-          100,
+          0,
           MQTT_QOS1,
           DO_NOT_RETAIN_MSG)
       == 0){
