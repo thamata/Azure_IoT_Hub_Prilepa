@@ -15,8 +15,7 @@ const char * networkPswd = "ubjBpguLwn";
 const char * udpAddress = "192.168.100.136";
 const int udpPort = 3333;
 
-char packetBuffer[256]; //buffer to hold incoming packet
-char ReplyBuffer[256] = "acknowledged\n";       // a string to send back
+char packetBuffer[256]; //buffer to hold incoming packet, payload
 
 //Are we currently connected?
 boolean connected = false;

@@ -34,6 +34,7 @@
 // Libraries for MQTT client and WiFi connection
 #include <WiFi.h>
 #include <mqtt_client.h>
+#include <WiFiUdp.h>
 
 // Azure IoT SDK for C includes
 #include <az_core.h>
@@ -71,6 +72,11 @@ static const char* mqtt_broker_uri = "mqtts://" IOT_CONFIG_IOTHUB_FQDN;
 static const char* device_id = IOT_CONFIG_DEVICE_ID;
 static const int mqtt_port = AZ_IOT_DEFAULT_MQTT_CONNECT_PORT;
 
+// UPD
+static const char * udpAddress = "192.168.100.136";
+static const int udpPort = 3333;
+WiFiUDP udp;
+
 // Memory allocated for the sample's variables and structures.
 static esp_mqtt_client_handle_t mqtt_client;
 static az_iot_hub_client client;
@@ -83,7 +89,9 @@ static unsigned long next_telemetry_send_time_ms = 0;
 static char telemetry_topic[128];
 static uint32_t telemetry_send_count = 0;
 //static String telemetry_payload = "{}";
-static uint8_t telemetry_payload[100];
+//static uint8_t telemetry_payload[100];
+char packetBuffer[256];
+char messageBuffer[256];
 
 #define INCOMING_DATA_BUFFER_SIZE 128
 static char incoming_data[INCOMING_DATA_BUFFER_SIZE];
@@ -308,10 +316,29 @@ static void establishConnection()
   initializeTime();
   initializeIoTHubClient();
   (void)initializeMqttClient();
+
+  IPAddress ip = WiFi.localIP();
+  Serial.print("IP Address: ");
+  Serial.println(ip);
 }
 
-static void sendTelemetry()
-{
+
+static void sendTelemetry(){
+  Logger.Info("Getting Message");
+
+  // read the packet into packetBuffer
+  int len = udp.read(messageBuffer, 255);
+  if (len > 0) {
+    messageBuffer[len] = 0;
+  }
+
+  StaticJsonDocument<256> JSONBuffer; 
+  deserializeJson(JSONBuffer, messageBuffer);
+
+  const char * temperature = JSONBuffer["temperature"];
+  const char * humidity = JSONBuffer["humidity"];
+
+
   Logger.Info("Sending telemetry ...");
 
   // The topic could be obtained just once during setup,
@@ -326,16 +353,15 @@ static void sendTelemetry()
 
   StaticJsonDocument<256> doc;
 
-  doc["temperature"] = random(15.0, 32.0);
-  doc["humidity"] = random(70, 90);
+  doc["temperature"] = temperature;
+  doc["humidity"] = humidity;
 
-  char buffer[256];
-  serializeJson(doc, buffer);
+  serializeJson(doc, packetBuffer);
 
   if (esp_mqtt_client_publish(
           mqtt_client,
           telemetry_topic,
-          buffer,
+          packetBuffer,
           0, //"data length, if set to 0, length is calculated from payload string"
           MQTT_QOS1,
           DO_NOT_RETAIN_MSG)
@@ -350,13 +376,12 @@ static void sendTelemetry()
 
 // Arduino setup and loop main functions.
 
-void setup() { 
+void setup(){ 
   Serial.begin(115200); 
   establishConnection(); 
   }
 
-void loop()
-{
+void loop(){
   if (WiFi.status() != WL_CONNECTED)
   {
     connectToWiFi();
@@ -371,6 +396,7 @@ void loop()
 #endif
   else if (millis() > next_telemetry_send_time_ms)
   {
+    //getPacket();
     sendTelemetry();
     next_telemetry_send_time_ms = millis() + TELEMETRY_FREQUENCY_MILLISECS;
   }
