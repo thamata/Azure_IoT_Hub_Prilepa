@@ -322,22 +322,27 @@ static void establishConnection()
   Serial.println(ip);
 }
 
-
 static void sendTelemetry(){
   Logger.Info("Getting Message");
 
-  // read the packet into packetBuffer
+  // read the packet into messageBuffer
+  udp.parsePacket();
   int len = udp.read(messageBuffer, 255);
   if (len > 0) {
     messageBuffer[len] = 0;
   }
+  Serial.println(messageBuffer);
+  //Logger.Info(String(messageBuffer));
+  //char json[] = " {\"temperature\":70, \"humidity\":30} ";
 
   StaticJsonDocument<256> JSONBuffer; 
   deserializeJson(JSONBuffer, messageBuffer);
 
-  const char * temperature = JSONBuffer["temperature"];
-  const char * humidity = JSONBuffer["humidity"];
+  int temperature = JSONBuffer["temperature"];
+  int humidity = JSONBuffer["humidity"];
 
+  //Logger.Info(String(temperature));
+  //Logger.Info(String(humidity));
 
   Logger.Info("Sending telemetry ...");
 
@@ -379,6 +384,7 @@ static void sendTelemetry(){
 void setup(){ 
   Serial.begin(115200); 
   establishConnection(); 
+  udp.begin(WiFi.localIP(),udpPort);
   }
 
 void loop(){
@@ -396,7 +402,6 @@ void loop(){
 #endif
   else if (millis() > next_telemetry_send_time_ms)
   {
-    //getPacket();
     sendTelemetry();
     next_telemetry_send_time_ms = millis() + TELEMETRY_FREQUENCY_MILLISECS;
   }

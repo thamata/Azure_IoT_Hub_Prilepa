@@ -39,7 +39,6 @@ static void SendPacket(){
   char buffer[256];
   serializeJson(doc, buffer);
 
-
   Udp.beginPacket(udpAddress,localPort);
   Udp.write(buffer);
   Udp.endPacket();
