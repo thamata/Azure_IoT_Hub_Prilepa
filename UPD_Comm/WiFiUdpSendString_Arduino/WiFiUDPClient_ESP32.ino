@@ -4,10 +4,11 @@
  */
 #include <WiFi.h>
 #include <WiFiUdp.h>
+#include "configs.h"
 
 // WiFi network name and password:
-const char * networkName = "Tele2_EWNH3G";
-const char * networkPswd = "ubjBpguLwn";
+const char * ssid = IOT_CONFIG_WIFI_SSID;
+const char * pass = IOT_CONFIG_WIFI_PASSWORD;
 
 //IP address to send UDP data to:
 // either use the ip address of the server or 

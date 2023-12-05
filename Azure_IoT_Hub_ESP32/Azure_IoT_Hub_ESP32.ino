@@ -73,8 +73,8 @@ static const char* device_id = IOT_CONFIG_DEVICE_ID;
 static const int mqtt_port = AZ_IOT_DEFAULT_MQTT_CONNECT_PORT;
 
 // UPD
-static const char * udpAddress = "192.168.100.136";
-static const int udpPort = 3333;
+static const char * udpAddress = "192.168.100.136";   // local address of arduino
+static const int udpPort = 3333;                      // local port
 WiFiUDP udp;
 
 // Memory allocated for the sample's variables and structures.

@@ -12,17 +12,19 @@
  */
 
 
+// https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/16.0533/lat/59.3279/data.json
+
 #include <WiFiS3.h>
 #include <ArduinoJson.h>
-
+#include "configs.h"
 
 int status = WL_IDLE_STATUS;
-///////please enter your sensitive data in the Secret tab/arduino_secrets.h
-char ssid[] = "Tele2_EWNH3G";        // your network SSID (name)
-char pass[] = "ubjBpguLwn";    // your network password (use for WPA, or use as key for WEP)
+const char * ssid = IOT_CONFIG_WIFI_SSID;
+const char * pass = IOT_CONFIG_WIFI_PASSWORD;
 
-const char * udpAddress = "192.168.100.185";
-unsigned int localPort = 3333;      // local port to listen on
+
+const char * udpAddress = "192.168.100.185";    // local address of esp32
+unsigned int localPort = 3333;                  // local port
 
 WiFiUDP Udp;
 
