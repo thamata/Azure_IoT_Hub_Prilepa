@@ -323,6 +323,8 @@ static void establishConnection()
 }
 
 static void sendTelemetry(){
+// REMOVE THIS CODE IF RUNNING ONLY ESP32, AND REPLACE temperature AND humidity ON LINE 363 & 364 WITH RANDOM
+//-------------------------------------------------------------
   Logger.Info("Getting Message");
 
   // read the packet into messageBuffer
@@ -343,7 +345,7 @@ static void sendTelemetry(){
 
   //Logger.Info(String(temperature));
   //Logger.Info(String(humidity));
-
+//-------------------------------------------------------------
   Logger.Info("Sending telemetry ...");
 
   // The topic could be obtained just once during setup,
@@ -358,8 +360,8 @@ static void sendTelemetry(){
 
   StaticJsonDocument<256> doc;
 
-  doc["temperature"] = temperature;
-  doc["humidity"] = humidity;
+  doc["temperature"] = temperature; //random(20.0, 30.0);
+  doc["humidity"] = humidity; //random(80, 90);
 
   serializeJson(doc, packetBuffer);
 
