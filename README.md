@@ -10,7 +10,10 @@ This project also contains code for an arduino uno microcontroller that sends Js
 **This code is located in:** UPD_Comm\WiFiUdpSendString_Arduino
 <br>
 ## Visualization
-![Screenshot](iot_visualization.png)
+<p align="center">
+  <img width="290" height="800" src="iot_visualization.png">
+</p>
+
 ## Setup
 1. **Following this tutorial set up your IoT hub and add a new device, in my case this is the esp32**
    - https://learn.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal
