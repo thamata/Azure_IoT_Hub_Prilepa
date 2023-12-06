@@ -30,3 +30,5 @@ This project also contains code for an arduino uno microcontroller that sends Js
    - https://learn.microsoft.com/en-us/azure/iot-hub/iot-hub-live-data-visualization-in-power-bi
 ## Safety
 This setup has minimal safety as the only connecting factor towards the Azure hub is the private key of the device. This can be changed to accommodate x509 certfication and a SAS token. The other limiting factor regarding to safety is the UDP tranfer of data between the devices. Anyone connected to the same network with the right adress and port can send packets to the esp32, and the protocoll itself is unreliable as it does not provide a handshake that guarantees that the packet arrives. But for this project it is more than plenty, if we were to miss a packet once every hour it would not impact the data significally. 
+## Result
+![Screenshot](powerbi.png)
