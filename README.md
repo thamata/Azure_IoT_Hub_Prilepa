@@ -11,7 +11,7 @@ This project also contains code for an arduino uno microcontroller that sends Js
 <br>
 ## Visualization
 <p align="center">
-  <img width="290" height="800" src="iot_visualization.png">
+  <img width="290" height="800" src="iot_visual.png">
 </p>
 
 ## Setup
